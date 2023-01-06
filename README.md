@@ -29,5 +29,4 @@ Se puede ejecutar utilizando docker-compose
 
 ### Diseño
 
-El proyecto está hecho bajo el patrón controller-service-repository-model
-
+El proyecto está hecho bajo el patrón controller-service-repository-model.

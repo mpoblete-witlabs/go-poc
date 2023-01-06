@@ -37,7 +37,7 @@ func (u empleadoRepository) GetAll() (empleados []models.Empleado, err error) {
 
 func (u empleadoRepository) GetOne(s string) (models.Empleado, error) {
 	var empl models.Empleado
-	err := u.DB.Where("ID = ?", s).First(&empl).Error
+	err := u.DB.Where("nombre = ?", s).First(&empl).Error
 
 	if err != nil {
 		fmt.Println("No encontrado : ", err)

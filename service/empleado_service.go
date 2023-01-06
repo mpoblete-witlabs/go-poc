@@ -9,6 +9,7 @@ type EmpleadoService interface {
 	Create(models.Empleado) (models.Empleado, error)
 	GetAll() ([]models.Empleado, error)
 	Update(string, models.Empleado) (models.Empleado, error)
+	GetOne(string) (models.Empleado, error)
 }
 
 type empleadoService struct {
@@ -31,4 +32,8 @@ func (u empleadoService) GetAll() ([]models.Empleado, error) {
 
 func (u empleadoService) Update(s string, empl models.Empleado) (models.Empleado, error) {
 	return u.empleadoRepository.Update(s, empl)
+}
+
+func (u empleadoService) GetOne(s string) (models.Empleado, error) {
+	return u.empleadoRepository.GetOne(s)
 }

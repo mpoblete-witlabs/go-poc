@@ -72,7 +72,18 @@ func (u empleadoController) ActualizarEmpleado(c *gin.Context) {
 }
 
 func (u empleadoController) ObtenerEmpleado(c *gin.Context) {
-	fmt.Println("")
-	name := c.Param("nombre")
+	name := c.Param("name")
 	fmt.Println(name)
+
+	empl, err := u.empleadoService.GetOne(name)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": empl,
+	})
 }

@@ -29,6 +29,7 @@ func main() {
 
 	httpRouter.POST("/empleados", empleadoController.AgregarEmpleado)
 	httpRouter.PUT("/empleados/:ID", empleadoController.ActualizarEmpleado)
+	httpRouter.GET("/empleados/:name", empleadoController.ObtenerEmpleado)
 
 	httpRouter.POST("/empresas", empresaController.AgregarEmpresa)
 	httpRouter.GET("/empresas", empresaController.ObtenerEmpresas)
