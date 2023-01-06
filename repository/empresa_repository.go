@@ -40,7 +40,7 @@ func (e empresaRepository) Create(empresa models.Empresa) (models.Empresa, error
 func (e empresaRepository) GetOne(s string) (models.Empresa, error) {
 	var empr models.Empresa
 	fmt.Println("String que llega por parámetro = ", s)
-	err := e.DB.Where("nombre = ?", s).First(&empr).Error
+	err := e.DB.Where("nombre = ?", s).Preload("Empleados").First(&empr).Error
 
 	return empr, err
 }
