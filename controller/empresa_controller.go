@@ -55,6 +55,7 @@ func (e empresaController) ObtenerEmpresas(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Error al consultar registro... = {}", err)
 		c.JSON(http.StatusBadRequest, gin.H{})
+		return
 
 	}
 	c.JSON(http.StatusOK, gin.H{"data": emprs})
@@ -67,6 +68,8 @@ func (e empresaController) ObtenerEmpresa(c *gin.Context) {
 
 	if err != nil {
 		fmt.Println("Error al consultar registro... = ", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
 	}
 
 	fmt.Println(empr)

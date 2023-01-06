@@ -1,8 +1,10 @@
 package service
 
 import (
+	"fmt"
 	"poc-go/models"
 	"poc-go/repository"
+	"strings"
 )
 
 type EmpleadoService interface {
@@ -35,5 +37,8 @@ func (u empleadoService) Update(s string, empl models.Empleado) (models.Empleado
 }
 
 func (u empleadoService) GetOne(s string) (models.Empleado, error) {
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	fmt.Println(s)
 	return u.empleadoRepository.GetOne(s)
 }
