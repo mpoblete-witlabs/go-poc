@@ -12,6 +12,8 @@ type EmpresaService interface {
 	Create(models.Empresa) (models.Empresa, error)
 	GetOne(string) (models.Empresa, error)
 	Delete(string) (models.Empresa, error)
+	CreateEmpleadoByEmpresa(string, models.Empleado) (models.Empresa, error)
+	ListEmpresasPagination(int) ([]models.Empresa, error)
 }
 
 type empresaService struct {
@@ -42,4 +44,13 @@ func (u empresaService) GetOne(s string) (models.Empresa, error) {
 
 func (u empresaService) Delete(s string) (models.Empresa, error) {
 	return u.empresaRepository.Delete(s)
+}
+
+func (u empresaService) CreateEmpleadoByEmpresa(s string, empl models.Empleado) (models.Empresa, error) {
+	return u.empresaRepository.CreateEmpleadoByEmpresa(s, empl)
+
+}
+
+func (u empresaService) ListEmpresasPagination(page int) ([]models.Empresa, error) {
+	return u.empresaRepository.ListEmpresasPageable(page)
 }

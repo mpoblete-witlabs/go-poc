@@ -26,6 +26,11 @@ type Empresa struct {
 	Empleados         []Empleado `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
+type ApiError struct {
+	Campo   string
+	Mensaje string
+}
+
 type Fecha time.Time
 
 var formatDate string = "2006-01-02"

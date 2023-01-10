@@ -35,6 +35,11 @@ func main() {
 	httpRouter.GET("/empresas", empresaController.ObtenerEmpresas)
 	httpRouter.GET("/empresas/:name", empresaController.ObtenerEmpresa)
 	httpRouter.DELETE("/empresas/:ID", empresaController.EliminarEmpresa)
-	httpRouter.Run()
+	httpRouter.POST("/dummy", empresaController.DummyValidatorFunc)
+
+	httpRouter.POST("/empresas/:ID/empleados", empresaController.CrearEmpleadoEnEmpresa)
+	httpRouter.GET("/empresas/page/:page", empresaController.ListaEmpresasPaginable)
+
+	httpRouter.Run("localhost:8080")
 
 }

@@ -1,12 +1,16 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"poc-go/models"
 	"poc-go/service"
+	"poc-go/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type EmpresaController interface {
@@ -14,6 +18,9 @@ type EmpresaController interface {
 	ObtenerEmpresas(*gin.Context)
 	ObtenerEmpresa(*gin.Context)
 	EliminarEmpresa(*gin.Context)
+	DummyValidatorFunc(*gin.Context)
+	CrearEmpleadoEnEmpresa(*gin.Context)
+	ListaEmpresasPaginable(c *gin.Context)
 }
 
 type empresaController struct {
@@ -88,4 +95,85 @@ func (e empresaController) EliminarEmpresa(c *gin.Context) {
 	}
 	fmt.Println(empr)
 	c.JSON(http.StatusAccepted, gin.H{"msg": "Registro Eliminado", "data": empr})
+}
+
+func (e empresaController) DummyValidatorFunc(c *gin.Context) {
+
+	type Dummy struct {
+		Nombre     string `validate:"required"`
+		Email      string `validate:"required,email"`
+		EstaActiva bool   `validate:"required"`
+		Direccion  string
+		Age        int `validate:"required,gte=0,lte=100"`
+	}
+
+	var dumm Dummy
+
+	if err := c.ShouldBindJSON(&dumm); err != nil {
+		fmt.Println("Error al Bindear JSON")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	validate := validator.New()
+
+	if err := validate.Struct(dumm); err != nil {
+		fmt.Println("No pasa validaciones")
+		var ve validator.ValidationErrors
+
+		if errors.As(err, &ve) {
+			//fmt.Println("Len -> ", len(ve))
+			out := make([]models.ApiError, len(ve))
+			for i, fe := range ve {
+				out[i] = models.ApiError{
+					Campo:   fe.Field(),
+					Mensaje: utils.MsgForTag(fe),
+				}
+			}
+			c.JSON(http.StatusBadRequest, gin.H{
+				"errors": out,
+			})
+		}
+	}
+
+}
+
+func (e empresaController) CrearEmpleadoEnEmpresa(c *gin.Context) {
+	var empl models.Empleado
+	id := c.Param("ID")
+
+	if err := c.ShouldBindJSON(&empl); err != nil {
+		fmt.Println("Error al unmarshaling")
+	}
+	fmt.Println(empl)
+
+	res, err := e.empresaService.CreateEmpleadoByEmpresa(id, empl)
+
+	fmt.Println(res)
+	fmt.Println(err)
+}
+
+func (e empresaController) ListaEmpresasPaginable(c *gin.Context) {
+	pageParam := c.Param("page")
+	page, err := strconv.Atoi(pageParam)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": fmt.Sprintln("No es posible formatear el valor: ", pageParam),
+		})
+
+		return
+	}
+
+	empresas, err := e.empresaService.ListEmpresasPagination(page)
+
+	if err != nil {
+		fmt.Println("Error al consultar lista de empresas")
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"empresas": empresas,
+	})
+
 }
